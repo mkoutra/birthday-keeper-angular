@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 
@@ -9,6 +9,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { NgIf } from '@angular/common';
+import { InsertUser } from '../../shared/interfaces/insert-user';
+import { UserService } from '../../shared/services/user.service';
+import { Router } from '@angular/router';
+import { ErrorResponse } from '../../shared/interfaces/error-response';
 
 @Component({
   selector: 'app-user-register',
@@ -18,9 +22,15 @@ import { NgIf } from '@angular/common';
   styleUrl: './user-register.component.css'
 })
 export class UserRegisterComponent {
-    passwordRegex: RegExp = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%&.+*]).{8,}$/;
+    userService = inject(UserService);
+    router = inject(Router);
 
+    successfulInsertion: boolean = false;
+    userAlreadyExists: boolean = false;
     passwordRequirementsVisible: boolean = false;
+    insertedUsername = '';
+
+    passwordRegex: RegExp = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%&.+*]).{8,}$/;
 
     form = new FormGroup({
             username: new FormControl('', Validators.required),
@@ -44,11 +54,41 @@ export class UserRegisterComponent {
         return null
     }
 
-    showPassRequirements(display: boolean) {
-        this.passwordRequirementsVisible = display;
+    showPassRequirements(visible: boolean) {
+        this.passwordRequirementsVisible = visible;
     }
 
     onSubmit() {
-        console.log(this.form.value)
+        console.log("Information obtained directly from the form: ", this.form.value);
+        const isAdmin: boolean = this.form.get('isAdmin')?.value || false;
+        
+        const userToInsert: InsertUser = {
+            username: this.form.get('username')?.value?.trim() || '',
+            password: this.form.get('password')?.value?.trim() || '',
+            role: isAdmin ? "ADMIN" : "USER"
+        };
+        
+        console.log(userToInsert);
+        
+        this.userService.registerUser(userToInsert).subscribe({
+            next: (response) => {
+                console.log("Response from backend: ", response)
+                this.successfulInsertion = true;
+                this.insertedUsername = userToInsert.username;
+            },
+            error: (error) => {
+                console.log('Error from Backend', error)
+                const errorResponse = error.error as ErrorResponse;
+                console.log('Error response', errorResponse);
+
+                this.userAlreadyExists = true;
+                this.insertedUsername = userToInsert.username;
+            }
+        });
+    }
+
+    goBackToLogin() {
+        this.form.reset();
+        this.router.navigate(['login']);
     }
 }

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LoggedInUser } from '../interfaces/logged-in-user';
 import { Router } from '@angular/router';
 
-import { InsertedUser } from '../interfaces/inserted-user';
+import { InsertUser } from '../interfaces/insert-user';
 import { InsertedUserResponse } from '../interfaces/inserted-user-response';
 import { Credentials } from '../interfaces/credentials';
 import { LoggedInResponse } from '../interfaces/logged-in-response';
@@ -24,7 +24,7 @@ export class UserService {
 
     constructor() { }
 
-    registerUser(user: InsertedUser) {
+    registerUser(user: InsertUser) {
         return this.http.post<InsertedUserResponse>(`${BACKEND_API_URL}/api/register`, user);
     }
 

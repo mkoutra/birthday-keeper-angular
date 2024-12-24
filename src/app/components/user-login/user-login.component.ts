@@ -30,7 +30,7 @@ export class UserLoginComponent {
     })
 
     onSubmit() {
-        const userCredentials =  this.form.value as Credentials
+        const userCredentials = this.form.value as Credentials
         console.log("Credentials directly from the form: ", userCredentials)
 
         this.userService.loginUser(userCredentials).subscribe({
