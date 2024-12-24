@@ -1,0 +1,49 @@
+<div class="container d-flex flex-column align-items-center border border-2 rounded mt-3 text-bg-light w-50">
+    <div>
+        <h3 class="display-2 text-center">Sign up</h3>
+        <span>Create your account to start managing your friends' birthdays effortlessly!</span>
+    </div>
+    
+    <form [formGroup]="form" class="d-flex flex-column w-50 mt-3">
+
+        <mat-form-field>
+            <mat-label>Username:</mat-label>
+            <input matInput type="text" formControlName="username">
+            <mat-error>Username is required.</mat-error>
+        </mat-form-field>
+        
+        <mat-form-field>
+            <mat-label>Password:</mat-label>
+            <input matInput type="password" formControlName="password" (focus)="showPassRequirements(true)">
+            @if (form.get('password')?.hasError('pattern')) {
+                <mat-error>Weak password.</mat-error>
+            } @else if (form.get('password')?.hasError('required')) {
+                <mat-error>Password is required.</mat-error>
+            }
+        </mat-form-field>
+
+        <div id="passwordRequirements" *ngIf="passwordRequirementsVisible" class="my-3">
+            Password must contain at least:
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-bg-light">8 Characters</li>
+                <li class="list-group-item text-bg-light">One uppercase letter</li>
+                <li class="list-group-item text-bg-light">One lowercase letter</li>
+                <li class="list-group-item text-bg-light">One digit</li>
+                <li class="list-group-item text-bg-light">One special character <span matTooltip="!, &amp;, #, $, %, &, ., +, *">&#9432;</span></li>
+            </ul>
+        </div>
+
+        <mat-form-field>
+            <mat-label>Confirm Password:</mat-label>
+            <input matInput type="password" formControlName="confirmPassword">
+
+            @if(form.get("confirmPassword")?.hasError("passwordMismatch")) {
+                <mat-error>Passwords do not match.</mat-error>
+            } @else {
+                <mat-error>Confirm password is required.</mat-error>
+            }
+        </mat-form-field>
+
+        <button mat-flat-button (click)="onSubmit()" [disabled]="form.invalid" class="mb-3">Sign up</button>
+    </form>
+</div>

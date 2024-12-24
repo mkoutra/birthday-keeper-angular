@@ -6,11 +6,13 @@ import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angula
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { Credentials } from '../../shared/interfaces/credentials';
 
 @Component({
   selector: 'app-user-login',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, RouterLink],
   templateUrl: './user-login.component.html',
   styleUrl: './user-login.component.css'
 })
@@ -24,8 +26,7 @@ export class UserLoginComponent {
     })
 
     onSubmit() {
-        const username = this.form.get('username')?.value;
-        const password = this.form.get('password')?.value;
-        console.log("Username: ", username, "Password: ", password)
+        const userCredentials =  this.form.value as Credentials
+        console.log(userCredentials)
     }
 }
