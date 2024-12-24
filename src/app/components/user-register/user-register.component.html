@@ -1,4 +1,4 @@
-<div class="container d-flex flex-column align-items-center border border-2 rounded mt-3 text-bg-light w-50">
+<div class="container d-flex flex-column align-items-center border border-2 rounded mt-3 text-bg-light">
     <div>
         <h3 class="display-2 text-center">Sign up</h3>
         <span>Create your account to start managing your friends' birthdays effortlessly!</span>
@@ -43,6 +43,8 @@
                 <mat-error>Confirm password is required.</mat-error>
             }
         </mat-form-field>
+        
+        <mat-checkbox formControlName="isAdmin">Register as administrator.</mat-checkbox>
 
         <button mat-flat-button (click)="onSubmit()" [disabled]="form.invalid" class="mb-3">Sign up</button>
     </form>

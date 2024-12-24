@@ -5,13 +5,15 @@ import { FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractContro
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-user-register',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatTooltipModule, NgIf],
+  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatTooltipModule, NgIf, MatCheckboxModule],
   templateUrl: './user-register.component.html',
   styleUrl: './user-register.component.css'
 })
@@ -23,7 +25,8 @@ export class UserRegisterComponent {
     form = new FormGroup({
             username: new FormControl('', Validators.required),
             password: new FormControl('', [Validators.required, Validators.pattern(this.passwordRegex)]),
-            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(5)])
+            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(5)]),
+            isAdmin: new FormControl(false)
         },
         this.passwordConfirmPasswordValidator
     )
