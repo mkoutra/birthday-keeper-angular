@@ -4,7 +4,7 @@ import { FriendResponse, friendsDemo } from '../../shared/interfaces/friend-resp
 import { Sort, MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
@@ -12,13 +12,14 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 @Component({
   selector: 'app-simple-table',
   standalone: true,
-  imports: [MatSortModule, MatIconModule, RouterLink, NgFor],
+  imports: [MatSortModule, MatIconModule, RouterLink, NgFor, NgIf],
   templateUrl: './simple-table.component.html',
   styleUrl: './simple-table.component.css'
 })
 export class SimpleTableComponent {
     router = inject(Router);
     friends = friendsDemo;
+    
     dialog = inject(MatDialog);
 
     sortedData: FriendResponse[];
