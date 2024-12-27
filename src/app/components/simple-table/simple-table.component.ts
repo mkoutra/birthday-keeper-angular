@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FriendResponse, friendsDemo } from '../../shared/interfaces/friend-response';
 
 import { Sort, MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgFor } from '@angular/common';
 
 @Component({
@@ -14,6 +14,7 @@ import { NgFor } from '@angular/common';
   styleUrl: './simple-table.component.css'
 })
 export class SimpleTableComponent {
+    router = inject(Router);
     friends = friendsDemo;
     
     sortedData: FriendResponse[];
@@ -50,7 +51,7 @@ export class SimpleTableComponent {
     }
 
     onEditClicked(id:string) {
-        console.log("Edit clicked for id: ", id);
+        this.router.navigate(['/friends/edit', id]);
     }
 
     onDeleteClicked(id:string) {
