@@ -3,7 +3,7 @@
       <app-navbar></app-navbar>
 
       <!-- Should be present only if the user is an ADMIN -->
-      <div class="w-25">
+      <div *ngIf="user()?.role === 'ADMIN'" class="w-25">
         <span>Administrator options</span>
         <app-list-group-menu></app-list-group-menu>
       </div>
