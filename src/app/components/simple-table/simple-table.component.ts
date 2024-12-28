@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FriendResponse, friendsDemo } from '../../shared/interfaces/friend-response';
 
 import { Sort, MatSortModule } from '@angular/material/sort';
@@ -20,15 +20,24 @@ import { FriendService } from '../../shared/services/friend.service';
 export class SimpleTableComponent {
     router = inject(Router);
     friendService = inject(FriendService);
-
-    friends = friendsDemo;
-    
     dialog = inject(MatDialog);
+    cdr = inject(ChangeDetectorRef);
 
-    sortedData: FriendResponse[];
+    friends: FriendResponse[] = [];
+    
+    sortedData: FriendResponse[] = [];
 
-    constructor() {
-        this.sortedData = this.friends.slice();
+    ngOnInit(): void {
+        this.friendService.getAllFriends().subscribe({
+            next: (response) => {
+                console.log("Response from backend: ", response);
+                this.friends = response;
+                this.sortedData = this.friends.slice();
+            },
+            error: (error) => {
+                console.log("Error from backend", error);
+            }
+        })
     }
 
     sortData(sort: Sort) {
@@ -49,9 +58,11 @@ export class SimpleTableComponent {
                 case 'lastname':
                     return compare(a.lastname, b.lastname, isAsc);
                 case 'dateOfBirth':
-                    return compare(a.dateOfBirth, b.dateOfBirth, isAsc);
+                    // Convert to Date for proper comparison
+                    return compare(new Date(a.dateOfBirth), new Date(b.dateOfBirth), isAsc);
                 case 'daysUntilNextBirthday':
-                    return compare(a.daysUntilNextBirthday, b.daysUntilNextBirthday, isAsc);
+                    // Convert to number for proper comparison
+                    return compare(Number(a.daysUntilNextBirthday), Number(b.daysUntilNextBirthday), isAsc);        
                 default:
                     return 0;
             }
@@ -75,18 +86,20 @@ export class SimpleTableComponent {
 
     deleteFriend(friendId: string): void {
         // Call the backend API to delete the friend
-        console.log(`Deleting friend with ID: ${friendId} from the backend.`);
         this.friendService.deleteFriend(friendId).subscribe({
             next: (response) => {
-                console.log(response);
+                console.log("Deleted friend: ", response);
+                // Update the frontend list by removing the deleted friend
+                this.friends = this.friends.filter(friend => friend.id !== friendId);
+                this.sortedData = this.friends.slice(); // Ensure the sortedData reflects the change
             },
             error: (error) => {
-                console.log(error)
+                console.log("Error trying to delete a friend.", error)
             }
         })
-      }
+    }
 }
 
-function compare(a: number | string, b: number | string, isAsc: boolean) {
+function compare(a: number | string | Date, b: number | string | Date, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
