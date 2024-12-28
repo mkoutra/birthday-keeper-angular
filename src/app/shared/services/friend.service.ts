@@ -21,7 +21,7 @@ export class FriendService {
     }
 
     deleteFriend(friendId: string) {
-        return this.http.delete(`${BACKEND_API_URL}/api/delete/${friendId}`);
+        return this.http.delete(`${BACKEND_API_URL}/api/friends/${friendId}`);
     }
 
     getFriendById(friendId: string) {

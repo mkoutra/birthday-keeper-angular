@@ -8,6 +8,7 @@ import { NgFor, NgIf } from '@angular/common';
 
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { FriendService } from '../../shared/services/friend.service';
 
 @Component({
   selector: 'app-simple-table',
@@ -18,6 +19,8 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 })
 export class SimpleTableComponent {
     router = inject(Router);
+    friendService = inject(FriendService);
+
     friends = friendsDemo;
     
     dialog = inject(MatDialog);
@@ -59,7 +62,7 @@ export class SimpleTableComponent {
         this.router.navigate(['/friends/edit', id]);
     }
 
-    onDeleteClicked(id:string):void {
+    onDeleteClicked(id: string):void {
         console.log("Delete clicked for id: ", id);
         const dialogRef = this.dialog.open(ConfirmationDialogComponent);
 
@@ -73,6 +76,14 @@ export class SimpleTableComponent {
     deleteFriend(friendId: string): void {
         // Call the backend API to delete the friend
         console.log(`Deleting friend with ID: ${friendId} from the backend.`);
+        this.friendService.deleteFriend(friendId).subscribe({
+            next: (response) => {
+                console.log(response);
+            },
+            error: (error) => {
+                console.log(error)
+            }
+        })
       }
 }
 
