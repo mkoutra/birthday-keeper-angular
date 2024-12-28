@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,51 +9,77 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 
-import { UserService } from '../../shared/services/user.service';
 import { Router } from '@angular/router';
 import { NavbarComponent } from "../navbar/navbar.component";
-import {provideNativeDateAdapter} from '@angular/material/core';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { pastDateValidator } from '../../shared/validator/past-date.validator';
-import { FriendResponse } from '../../shared/interfaces/friend-response';
+import { FriendService } from '../../shared/services/friend.service';
+import { NgIf } from '@angular/common';
+import { FriendUpdate } from '../../shared/interfaces/friend-update';
+import { ErrorResponse } from '../../shared/interfaces/error-response';
 
 @Component({
-  selector: 'app-update-friend',
-  standalone: true,
-  providers: [provideNativeDateAdapter()],
-  imports: [ReactiveFormsModule, 
-            MatButtonModule,
-            MatFormFieldModule,
-            MatInputModule,
-            MatTooltipModule,
-            NavbarComponent,
-            NavbarComponent,
-            MatDatepickerModule],
-  templateUrl: './update-friend.component.html',
-  styleUrl: './update-friend.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-update-friend',
+    standalone: true,
+    providers: [provideNativeDateAdapter()],
+    imports: [ReactiveFormsModule, 
+              MatButtonModule,
+              MatFormFieldModule,
+              MatInputModule,
+              MatTooltipModule,
+              NavbarComponent,
+              NavbarComponent,
+              MatDatepickerModule,
+              NgIf],
+    templateUrl: './update-friend.component.html',
+    styleUrl: './update-friend.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UpdateFriendComponent {
-    friendId: string | null | undefined;
     route = inject(ActivatedRoute);
-    userService = inject(UserService);
+    friendService = inject(FriendService);
     router = inject(Router);
+    cdr = inject(ChangeDetectorRef);
+
+    friendId: string | null | undefined;
+    friendIdIsInvalid?: boolean;
+    
+    successfulUpdate: boolean = false;
+    friendAlreadyExists: boolean = false;
+    insertedFullname = 'John Doe';
+
 
     ngOnInit(): void {
         this.friendId = this.route.snapshot.paramMap.get('id');
+        
+        if (this.friendId) {
+            this.friendIdIsInvalid = /^\d+$/.test(this.friendId);
+        }
+        
+        if (!this.friendId || !this.friendIdIsInvalid) {
+            this.router.navigate(['not-found'])
+        }
+
         // Fetch data from API to fill the form
+        if (this.friendId) {
+            this.friendService.getFriendById(this.friendId).subscribe({
+                next: (response) => {
+                    console.log("Response for filling the form: ", response)
+                    this.form.patchValue({
+                        firstname: response.firstname,
+                        lastname: response.lastname,
+                        nickname: response.nickname,
+                        dateOfBirth: response.dateOfBirth,
+                    });
+                },
+                error: (error) => {
+                    const errorResponse = error.error as ErrorResponse;
+                    console.log("Error from backend: ", errorResponse);
+                    this.router.navigate(['not-found'])
+                }
+            })
+        }
     }
-
-    testFriend = {
-        firstname: "Test Firstname",
-        lastname: "Test Lastname",
-        nickname: "Test nickname",
-        dateOfBirth:"1998-02-23"
-    }
-
-    successfulInsertion: boolean = false;
-    friendAlreadyExists: boolean = false;
-
-    insertedFullname = 'John Doe';
 
     form = new FormGroup({
             firstname: new FormControl('', Validators.required),
@@ -63,54 +89,52 @@ export class UpdateFriendComponent {
     })
 
     createValidDateFormat(date: Date) {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      return `${year}-${month}-${day}`;
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`;
     }
 
     onSubmit() {
-        console.log("Information obtained directly from the form: ", this.form.value);
-        console.log("Date Of Birth: ", this.form.get('dateOfBirth')?.value)
         let date: Date = this.form.get('dateOfBirth')?.value as unknown as Date
 
-        console.log(this.createValidDateFormat(date))
+        const friendToUpdate: FriendUpdate = {
+            id: this.friendId || '',
+            firstname: this.form.get('firstname')?.value?.trim() || '',
+            lastname: this.form.get('lastname')?.value?.trim() || '',
+            nickname: this.form.get('nickname')?.value?.trim(),
+            // Check if the date is provided as a string (e.g., from an auto-filled value).
+            // If the date is a string, pass it directly. Otherwise, format it using
+            // createValidDateFormat(), which requires a Date object as its argument.
+            dateOfBirth: typeof date === 'string' ? date : this.createValidDateFormat(date),
+        };
         
-        this.form.patchValue({
-            firstname: this.testFriend.firstname,
-            lastname: this.testFriend.lastname,
-            nickname: this.testFriend.nickname,
-            dateOfBirth: this.testFriend.dateOfBirth,
-        })
+        console.log(friendToUpdate);
+        
+        this.friendService.updateFriend(friendToUpdate, this.friendId || '').subscribe({
+            next: (response) => {
+                console.log("Response from backend: ", response)
+                this.insertedFullname = `${response.firstname} ${response.lastname}`;
+                this.successfulUpdate = true;
+                this.friendAlreadyExists = false;
 
-        // const userToInsert: InsertUser = {
-        //     username: this.form.get('username')?.value?.trim() || '',
-        //     password: this.form.get('password')?.value?.trim() || '',
-        //     role: isAdmin ? "ADMIN" : "USER"
-        // };
-        
-        // console.log(userToInsert);
-        
-        // this.userService.registerUser(userToInsert).subscribe({
-        //     next: (response) => {
-        //         console.log("Response from backend: ", response)
-        //         this.successfulInsertion = true;
-        //         this.insertedFullname = userToInsert.username;
-        //     },
-        //     error: (error) => {
-        //         console.log('Error from Backend', error)
-        //         const errorResponse = error.error as ErrorResponse;
-        //         console.log('Error response', errorResponse);
+                this.cdr.detectChanges(); // notifying Angular of the changes
+            },
+            error: (error) => {
+                const errorResponse = error.error as ErrorResponse;
+                console.log('Error response', errorResponse);
 
-        //         this.friendAlreadyExists = true;
-        //         this.insertedFullname = userToInsert.username;
-        //     }
-        // });
+                this.friendAlreadyExists = true;
+                this.successfulUpdate = false;
+                this.insertedFullname = `${friendToUpdate.firstname} ${friendToUpdate.lastname}`;
+
+                this.cdr.detectChanges(); // notifying Angular of the changes
+            }
+        });
     }
 
     goBackToMain() {
         this.form.reset();
-        this.router.navigate(['login']);
+        this.router.navigate(['main']);
     }
-
 }

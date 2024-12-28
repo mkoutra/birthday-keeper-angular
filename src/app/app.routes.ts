@@ -8,10 +8,11 @@ import { UpdateFriendComponent } from './components/update-friend/update-friend.
 
 export const routes: Routes = [
     { path:'login', component: UserLoginComponent},
-    { path:'', redirectTo: '/login', pathMatch: 'full' },   // localhost:4200 then redirect to /login, path should match 100%
+    { path:'', redirectTo: '/login', pathMatch: 'full' },       // localhost:4200 then redirect to /login, path should match 100%
     { path:'register', component: UserRegisterComponent},
     { path:'main', component: MainViewComponent},
     { path:'friends/add', component: AddFriendComponent},
     { path:'friends/edit/:id', component: UpdateFriendComponent},
-    { path:'**', component: NotFoundComponent},             // a no matching path
+    { path:'not-found', component: NotFoundComponent},   
+    { path:'**', redirectTo: '/not-found', pathMatch: 'full'},  // any non mathcing path should redirect to /not-found
 ];

@@ -1,8 +1,6 @@
 <div class="container mt-3">
     <app-navbar></app-navbar>
 
-    <p>Friend ID: {{friendId}}</p>
-
     <div class="d-flex flex-column align-items-center">
 
         <h4 class="display-6 my-3">Edit your friend's details:</h4>
@@ -40,22 +38,20 @@
                     }
                 </mat-form-field>
         
-                <button mat-flat-button (click)="onSubmit()" [disabled]="form.invalid" class="my-2">Update Friend</button>
+                <div class="d-flex justify-content-between align-items-center my-2">
+                    <button mat-flat-button (click)="goBackToMain()" class="w-25 me-1 bg-warning">Cancel</button>
+                    <button mat-flat-button (click)="onSubmit()" [disabled]="form.invalid" class="w-75 ms-1">Update Friend</button>
+                </div>
             </form>
         </div>
             
-            @if (friendAlreadyExists) {
-                <div class="alert alert-danger text-center mt-3 w-50">
-                    <strong>Error:</strong>A friend named <strong>{{insertedFullname}}</strong> already exists.
-                </div>
-            }
-            
-            @if (successfulInsertion) {
-                <div class="alert alert-success text-center mt-3 w-50">
-                    Your friend, <strong>{{insertedFullname}}</strong>, has been added successfully!
-                </div>
-                <button mat-flat-button (click)="goBackToMain()" class="mt-3 w-50">Back to Main</button>
-            }
+        <div *ngIf="friendAlreadyExists" class="alert alert-danger text-center mt-3 w-50">
+            <strong>Error:</strong>A friend named <strong>{{insertedFullname}}</strong> already exists.
+        </div>
+    
+        <div *ngIf="successfulUpdate" class="alert alert-success text-center mt-3 w-50">
+            Your friend, <strong>{{insertedFullname}}</strong>, has been updated successfully!
+        </div>
 
     </div>
 </div>

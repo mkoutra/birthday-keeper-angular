@@ -9,7 +9,7 @@ export interface FriendResponse {
 
 export const friendsDemo: FriendResponse[] = [
     {
-        "id": "1",
+        "id": "7",
         "firstname": "Michalis",
         "lastname": "Papadopoulos",
         "nickname": "",
