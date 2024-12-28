@@ -2,7 +2,7 @@
     <a class="navbar-brand ms-3 cursor-pointer" role="button" routerLink="/main"><span class="display-4">Birthday Keeper</span></a>
     <div *ngIf="user()">
         <span class="me-3 d-flex gap-2 text-light">
-            Welcome, {{user()?.username}}
+            {{user()?.username}}
             <mat-icon role="button" (click)="logout()">logout</mat-icon>
         </span>
     </div>
