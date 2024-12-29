@@ -5,11 +5,11 @@ import { LoggedInUser } from '../interfaces/logged-in-user';
 import { Router } from '@angular/router';
 
 import { InsertUser } from '../interfaces/insert-user';
-import { InsertedUserResponse } from '../interfaces/inserted-user-response';
 import { Credentials } from '../interfaces/credentials';
 import { LoggedInResponse } from '../interfaces/logged-in-response';
 import { jwtDecode } from 'jwt-decode';
 import { TokenClaims } from '../interfaces/token-claims';
+import { UserResponse } from '../interfaces/user-response';
 
 const BACKEND_API_URL = "http://localhost:8080"
 
@@ -49,7 +49,19 @@ export class UserService {
     }
 
     registerUser(user: InsertUser) {
-        return this.http.post<InsertedUserResponse>(`${BACKEND_API_URL}/api/register`, user);
+        return this.http.post<UserResponse>(`${BACKEND_API_URL}/api/register`, user);
+    }
+
+    getAllUsers() {
+      return this.http.get<UserResponse[]>(`${BACKEND_API_URL}/api/admin/users`);
+    }
+
+    getPaginatedUsers(pageNumber: number, pageSize: number) {
+      return this.http.get(`${BACKEND_API_URL}/api/admin/paginated?pageNo=${pageNumber}&size=${pageSize}`);
+    }
+
+    deleteUser(userId: string) {
+      return this.http.delete<UserResponse>(`${BACKEND_API_URL}/api/admin/users/${userId}`);
     }
 
     loginUser(credentials: Credentials) {

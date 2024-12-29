@@ -3,11 +3,12 @@ import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 import { MatIconModule } from '@angular/material/icon';
 import { NgIf } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, MatIconModule, NgIf],
+  imports: [RouterLink, MatIconModule, NgIf, MatTooltipModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

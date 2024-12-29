@@ -9,11 +9,12 @@ import { NgFor, NgIf } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { FriendService } from '../../shared/services/friend.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-simple-table',
   standalone: true,
-  imports: [MatSortModule, MatIconModule, RouterLink, NgFor, NgIf],
+  imports: [MatSortModule, MatIconModule, RouterLink, NgFor, NgIf, MatTooltipModule],
   templateUrl: './simple-table.component.html',
   styleUrl: './simple-table.component.css'
 })
@@ -75,7 +76,10 @@ export class SimpleTableComponent {
 
     onDeleteClicked(id: string):void {
         console.log("Delete clicked for id: ", id);
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent);
+
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            data: {entityName: 'friend'}
+        });
 
         dialogRef.afterClosed().subscribe(result => {
             if (result === 'confirm') {

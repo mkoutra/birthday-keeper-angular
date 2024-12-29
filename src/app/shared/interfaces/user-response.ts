@@ -1,4 +1,4 @@
-export interface InsertedUserResponse {
+export interface UserResponse {
     id: string,
     username: string,
     role: string

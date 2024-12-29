@@ -30,8 +30,16 @@
           <td>{{ friend.nickname }}</td>
           <td>{{ friend.dateOfBirth }}</td>
           <td>{{ friend.daysUntilNextBirthday }}</td>
-          <td><a type="button" class="btn btn-outline-primary" (click)="onEditClicked(friend.id)"><mat-icon>edit</mat-icon></a></td>
-          <td><a type="button" class="btn btn-outline-danger" (click)="onDeleteClicked(friend.id)"><mat-icon>delete</mat-icon></a></td>
+          <td>
+            <a type="button" class="btn btn-outline-primary" (click)="onEditClicked(friend.id)" matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </a>
+          </td>
+          <td>
+            <a type="button" class="btn btn-outline-danger" (click)="onDeleteClicked(friend.id)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </a>
+          </td>
         </tr>
       </tbody>
   </table>

@@ -11,13 +11,19 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgIf } from '@angular/common';
 import { InsertUser } from '../../shared/interfaces/insert-user';
 import { UserService } from '../../shared/services/user.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ErrorResponse } from '../../shared/interfaces/error-response';
 
 @Component({
   selector: 'app-user-register',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatTooltipModule, NgIf, MatCheckboxModule],
+  imports: [ReactiveFormsModule,
+            MatButtonModule,
+            MatFormFieldModule,
+            MatInputModule,
+            MatTooltipModule,
+            NgIf,
+            MatCheckboxModule],
   templateUrl: './user-register.component.html',
   styleUrl: './user-register.component.css'
 })
@@ -85,6 +91,11 @@ export class UserRegisterComponent {
                 this.insertedUsername = userToInsert.username;
             }
         });
+    }
+
+    goBackToMain() {
+        this.form.reset();
+        this.router.navigate(['login'])
     }
 
     goBackToLogin() {

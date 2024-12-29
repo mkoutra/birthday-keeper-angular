@@ -9,7 +9,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 
 import { Router } from '@angular/router';
-import { NavbarComponent } from "../navbar/navbar.component";
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { pastDateValidator } from '../../shared/validator/past-date.validator';
 import { FriendService } from '../../shared/services/friend.service';
@@ -26,8 +25,6 @@ import { NgIf } from '@angular/common';
             MatFormFieldModule,
             MatInputModule,
             MatTooltipModule,
-            NavbarComponent,
-            NavbarComponent,
             MatDatepickerModule,
             NgIf],
   templateUrl: './add-friend.component.html',

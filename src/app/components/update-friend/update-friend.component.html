@@ -1,5 +1,5 @@
 <div class="container mt-3">
-    <app-navbar></app-navbar>
+    <!-- <app-navbar></app-navbar> -->
 
     <div class="d-flex flex-column align-items-center">
 
@@ -39,7 +39,7 @@
                 </mat-form-field>
         
                 <div class="d-flex justify-content-between align-items-center my-2">
-                    <button mat-flat-button (click)="goBackToMain()" class="w-25 me-1 bg-warning">Cancel</button>
+                    <button mat-flat-button (click)="goBackToMain()" class="w-25 me-1 bg-warning">Go Back</button>
                     <button mat-flat-button (click)="onSubmit()" [disabled]="form.invalid" class="w-75 ms-1">Update Friend</button>
                 </div>
             </form>

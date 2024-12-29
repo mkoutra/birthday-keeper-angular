@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { SimpleTableComponent } from "../simple-table/simple-table.component";
-import { NavbarComponent } from '../navbar/navbar.component';
 import { ListGroupMenuComponent } from '../list-group-menu/list-group-menu.component';
 import { UserService } from '../../shared/services/user.service';
 import { NgIf } from '@angular/common';
@@ -8,7 +7,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-main-view',
   standalone: true,
-  imports: [SimpleTableComponent, NavbarComponent, ListGroupMenuComponent, NgIf],
+  imports: [SimpleTableComponent, ListGroupMenuComponent, NgIf],
   templateUrl: './main-view.component.html',
   styleUrl: './main-view.component.css'
 })
