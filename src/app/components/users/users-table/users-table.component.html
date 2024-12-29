@@ -27,7 +27,7 @@
             <td>{{ user.username }}</td>
             <td>{{ user.role }}</td>
             <td>
-              <a type="button" class="btn btn-outline-danger" (click)="onDeleteClicked(user.id)" matTooltip="Delete">
+              <a *ngIf="!isLoggedInUser(user.username)" type="button" class="btn btn-outline-danger" (click)="onDeleteClicked(user.id)" matTooltip="Delete">
                 <mat-icon>delete</mat-icon>
               </a>
             </td>

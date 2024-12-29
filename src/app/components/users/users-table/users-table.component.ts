@@ -92,6 +92,11 @@ export class UsersTableComponent{
             }
         })
     }
+
+    // returns true if the username belongs to the logged in user.
+    isLoggedInUser(username: string):boolean {
+        return username == this.userService.user()?.username;
+    }
 }
 
 function compare(a: number | string, b: number | string, isAsc: boolean) {
