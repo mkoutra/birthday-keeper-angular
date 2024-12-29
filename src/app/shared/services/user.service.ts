@@ -7,70 +7,67 @@ import { Router } from '@angular/router';
 import { InsertUser } from '../interfaces/insert-user';
 import { Credentials } from '../interfaces/credentials';
 import { LoggedInResponse } from '../interfaces/logged-in-response';
-import { jwtDecode } from 'jwt-decode';
 import { TokenClaims } from '../interfaces/token-claims';
 import { UserResponse } from '../interfaces/user-response';
+import { AuthService } from './auth.service';
 
 const BACKEND_API_URL = "http://localhost:8080"
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class UserService {
+  http: HttpClient = inject(HttpClient);
+  router = inject(Router);
+  authService = inject(AuthService);
 
-    http: HttpClient = inject(HttpClient);
+  user = signal<LoggedInUser | null>(null)
 
-    user = signal<LoggedInUser | null>(null)
+  constructor() { 
+    // If a valid token exists in the local storage update user's info. 
+    if (!this.authService.isTokenExpired()) {
+      const decodedToken = this.authService.getDecodedToken() as TokenClaims;
 
-    router = inject(Router);
-
-    constructor() { 
-        // Try to read token from browser's local storage
-        const token = localStorage.getItem("birthday_keeper_token");
-
-        if (token) {
-          const decodedToken = jwtDecode(token) as unknown as TokenClaims;
-    
-          this.user.set({
-            username: decodedToken.sub,
-            role: decodedToken.role
-          });
-        }
-    
-        effect(()=> {
-          if (this.user()) {
-            // If there are changes in user variable
-            console.log("User logged in: ", this.user()?.username);
-          } else {
-            // If there are no changes in user variable.
-            console.log("No user logged in.");
-          }
-        });
+      this.user.set({
+        username: decodedToken.sub,
+        role: decodedToken.role
+      });
     }
 
-    registerUser(user: InsertUser) {
-        return this.http.post<UserResponse>(`${BACKEND_API_URL}/api/register`, user);
-    }
+    effect(()=> {
+      if (this.user()) {
+        // If there are changes in user variable
+        console.log("User logged in: ", this.user()?.username);
+      } else {
+        // If there are no changes in user variable.
+        console.log("No user logged in.");
+      }
+    });
+  }
 
-    getAllUsers() {
-      return this.http.get<UserResponse[]>(`${BACKEND_API_URL}/api/admin/users`);
-    }
+  registerUser(user: InsertUser) {
+    return this.http.post<UserResponse>(`${BACKEND_API_URL}/api/register`, user);
+  }
 
-    getPaginatedUsers(pageNumber: number, pageSize: number) {
-      return this.http.get(`${BACKEND_API_URL}/api/admin/paginated?pageNo=${pageNumber}&size=${pageSize}`);
-    }
+  getAllUsers() {
+    return this.http.get<UserResponse[]>(`${BACKEND_API_URL}/api/admin/users`);
+  }
 
-    deleteUser(userId: string) {
-      return this.http.delete<UserResponse>(`${BACKEND_API_URL}/api/admin/users/${userId}`);
-    }
+  getPaginatedUsers(pageNumber: number, pageSize: number) {
+    return this.http.get(`${BACKEND_API_URL}/api/admin/paginated?pageNo=${pageNumber}&size=${pageSize}`);
+  }
 
-    loginUser(credentials: Credentials) {
-        return this.http.post<LoggedInResponse>(`${BACKEND_API_URL}/api/auth/authenticate`, credentials);
-    }
+  deleteUser(userId: string) {
+    return this.http.delete<UserResponse>(`${BACKEND_API_URL}/api/admin/users/${userId}`);
+  }
 
-    logoutUser() {
-        this.user.set(null);
-        localStorage.removeItem('birthday_keeper_token');
-        return this.http.post<{code: string, description: string}>(`${BACKEND_API_URL}/api/logout`, null);
-    }
+  loginUser(credentials: Credentials) {
+    return this.http.post<LoggedInResponse>(`${BACKEND_API_URL}/api/auth/authenticate`, credentials);
+  }
+
+  logoutUser() {
+    this.user.set(null);
+    localStorage.removeItem('birthday_keeper_token');
+    return this.http.post<{code: string, description: string}>(`${BACKEND_API_URL}/api/logout`, null);
+  }
 }

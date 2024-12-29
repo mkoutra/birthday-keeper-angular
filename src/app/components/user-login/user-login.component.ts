@@ -9,8 +9,8 @@ import { Router, RouterLink } from '@angular/router';
 import { Credentials } from '../../shared/interfaces/credentials';
 import { UserService } from '../../shared/services/user.service';
 
-import { jwtDecode } from 'jwt-decode'
 import { TokenClaims } from '../../shared/interfaces/token-claims';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-user-login',
@@ -22,6 +22,7 @@ import { TokenClaims } from '../../shared/interfaces/token-claims';
 export class UserLoginComponent {
     router = inject(Router);
     userService = inject(UserService);
+    authService = inject(AuthService);
 
     invalidLogin: boolean = false;
 
@@ -36,19 +37,16 @@ export class UserLoginComponent {
 
         this.userService.loginUser(userCredentials).subscribe({
             next: (response) => {
-                console.log("Response from backend: ", response)
-
-                // Retrieve token from the response dto
+                // Get token from the backend response.
                 const token = response.jwtToken;
-                console.log("Token: ", token);
                 
-                // save token to browser's local storage 
-                localStorage.setItem("birthday_keeper_token", token);
+                // Save the token to browser's local storage.
+                this.authService.saveTokenToStorage(token);
 
-                const decodedToken = jwtDecode(token) as TokenClaims;
-                console.log(decodedToken);
+                // Get the decoded information from the saved token.
+                const decodedToken = this.authService.getDecodedToken() as TokenClaims;
 
-                // Assigns value to user's signal variable
+                // Assign information from the token to user's signal variable
                 this.userService.user.set({
                     username: decodedToken.sub,
                     role: decodedToken.role
