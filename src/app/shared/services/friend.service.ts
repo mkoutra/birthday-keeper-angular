@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { FriendResponse } from '../interfaces/friend-response';
 import { FriendInsert } from '../interfaces/friend-insert';
 import { FriendUpdate } from '../interfaces/friend-update';
+import { Page } from '../interfaces/page';
 
 const BACKEND_API_URL = "http://localhost:8080"
 
@@ -33,6 +34,6 @@ export class FriendService {
     }
 
     getPaginatedFriends(pageNumber: number, pageSize: number) {
-        return this.http.get(`${BACKEND_API_URL}/api/friends/paginated?pageNo=${pageNumber}&size=${pageSize}`);
+        return this.http.get<Page>(`${BACKEND_API_URL}/api/friends/paginated?pageNo=${pageNumber}&size=${pageSize}`);
     }
 }

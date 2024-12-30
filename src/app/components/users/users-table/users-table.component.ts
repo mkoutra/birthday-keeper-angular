@@ -11,10 +11,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { UserService } from '../../../shared/services/user.service';
 import { UserResponse } from '../../../shared/interfaces/user-response';
 
+import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
+
 @Component({
   selector: 'app-users-table',
   standalone: true,
-  imports: [MatSortModule, MatIconModule, RouterLink, NgFor, NgIf, MatTooltipModule],
+  imports: [MatSortModule,
+            MatIconModule,
+            MatPaginatorModule,
+            MatTooltipModule,
+            RouterLink,
+            NgFor,
+            NgIf
+        ],
   templateUrl: './users-table.component.html',
   styleUrl: './users-table.component.css'
 })
@@ -25,10 +34,18 @@ export class UsersTableComponent{
     cdr = inject(ChangeDetectorRef);
 
     users: UserResponse[] = [];
-    
     sortedData: UserResponse[] = [];
 
+    // Pagination parameters
+    totalElements: number = 0;
+    pageSize: number = 5; // Default page size
+    pageNo: number = 0;
+
     ngOnInit(): void {
+        this.fetchPaginatedUsers();
+    }
+
+    fetchAllUsers() {
         this.userService.getAllUsers().subscribe({
             next: (response) => {
                 console.log("Response from backend: ", response);
@@ -39,6 +56,19 @@ export class UsersTableComponent{
                 console.log("Error from backend", error);
             }
         })
+    }
+
+    fetchPaginatedUsers(): void {
+        this.userService.getPaginatedUsers(this.pageNo, this.pageSize).subscribe({
+            next: (response) => {
+                this.users = response.content as UserResponse[];
+                this.totalElements = response.totalElements;
+                this.sortedData = this.users.slice();
+            },
+            error: (error) => {
+                console.log("Error fetching paginated users ", error);
+            }
+        });
     }
 
     sortData(sort: Sort) {
@@ -84,8 +114,7 @@ export class UsersTableComponent{
             next: (response) => {
                 console.log("Deleted user: ", response);
                 // Update the frontend list by removing the deleted user
-                this.users = this.users.filter(user => user.id !== userId);
-                this.sortedData = this.users.slice(); // Ensure the sortedData reflects the change
+                this.fetchPaginatedUsers();
             },
             error: (error) => {
                 console.log("Error trying to delete a user.", error)
@@ -96,6 +125,12 @@ export class UsersTableComponent{
     // returns true if the username belongs to the logged in user.
     isLoggedInUser(username: string):boolean {
         return username == this.userService.user()?.username;
+    }
+
+    onPageChange(event: PageEvent): void {
+        this.pageNo = event.pageIndex;
+        this.pageSize = event.pageSize;
+        this.fetchPaginatedUsers();
     }
 }
 

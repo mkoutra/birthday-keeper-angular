@@ -24,7 +24,7 @@
     
     <tbody>
         <tr *ngFor="let friend of sortedData; let i = index" [attr.data-index]="i">
-          <td>{{ i + 1 }}</td>
+          <td>{{ i + 1 + pageNo * pageSize}}</td>
           <td>{{ friend.firstname }}</td>
           <td>{{ friend.lastname }}</td>
           <td>{{ friend.nickname }}</td>
@@ -44,3 +44,11 @@
       </tbody>
   </table>
 </div>
+
+<mat-paginator
+  [length]="totalElements"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10]"
+  [showFirstLastButtons]=true
+  (page)="onPageChange($event)">
+</mat-paginator>

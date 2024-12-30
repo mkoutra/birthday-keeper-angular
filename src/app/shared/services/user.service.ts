@@ -10,6 +10,7 @@ import { LoggedInResponse } from '../interfaces/logged-in-response';
 import { TokenClaims } from '../interfaces/token-claims';
 import { UserResponse } from '../interfaces/user-response';
 import { AuthService } from './auth.service';
+import { Page } from '../interfaces/page';
 
 const BACKEND_API_URL = "http://localhost:8080"
 
@@ -54,7 +55,7 @@ export class UserService {
   }
 
   getPaginatedUsers(pageNumber: number, pageSize: number) {
-    return this.http.get(`${BACKEND_API_URL}/api/admin/paginated?pageNo=${pageNumber}&size=${pageSize}`);
+    return this.http.get<Page>(`${BACKEND_API_URL}/api/admin/users/paginated?pageNo=${pageNumber}&size=${pageSize}`);
   }
 
   deleteUser(userId: string) {

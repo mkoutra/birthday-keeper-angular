@@ -11,10 +11,19 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { FriendService } from '../../shared/services/friend.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
+
 @Component({
   selector: 'app-simple-table',
   standalone: true,
-  imports: [MatSortModule, MatIconModule, RouterLink, NgFor, NgIf, MatTooltipModule],
+  imports: [MatSortModule,
+            MatIconModule,
+            MatPaginatorModule,
+            MatTooltipModule,
+            RouterLink,
+            NgFor,
+            NgIf
+        ],
   templateUrl: './simple-table.component.html',
   styleUrl: './simple-table.component.css'
 })
@@ -25,10 +34,18 @@ export class SimpleTableComponent {
     cdr = inject(ChangeDetectorRef);
 
     friends: FriendResponse[] = [];
-    
     sortedData: FriendResponse[] = [];
 
+    // Pagination parameters
+    totalElements: number = 0;
+    pageSize: number = 5; // Default page size
+    pageNo: number = 0;
+
     ngOnInit(): void {
+        this.fetchPaginatedFriends();
+    }
+
+    fetchAllFriends(): void {
         this.friendService.getAllFriends().subscribe({
             next: (response) => {
                 console.log("Response from backend: ", response);
@@ -39,6 +56,19 @@ export class SimpleTableComponent {
                 console.log("Error from backend", error);
             }
         })
+    }
+
+    fetchPaginatedFriends(): void {
+        this.friendService.getPaginatedFriends(this.pageNo, this.pageSize).subscribe({
+            next: (response) => {
+                this.friends = response.content as FriendResponse[];
+                this.totalElements = response.totalElements;
+                this.sortedData = this.friends.slice();
+            },
+            error: (error) => {
+                console.log("Error fetching paginated friends ", error);
+            }
+        });
     }
 
     sortData(sort: Sort) {
@@ -93,14 +123,18 @@ export class SimpleTableComponent {
         this.friendService.deleteFriend(friendId).subscribe({
             next: (response) => {
                 console.log("Deleted friend: ", response);
-                // Update the frontend list by removing the deleted friend
-                this.friends = this.friends.filter(friend => friend.id !== friendId);
-                this.sortedData = this.friends.slice(); // Ensure the sortedData reflects the change
+                this.fetchPaginatedFriends()
             },
             error: (error) => {
                 console.log("Error trying to delete a friend.", error)
             }
         })
+    }
+
+    onPageChange(event: PageEvent): void {
+        this.pageNo = event.pageIndex;
+        this.pageSize = event.pageSize;
+        this.fetchPaginatedFriends();
     }
 }
 
