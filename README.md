@@ -64,7 +64,3 @@ A Docker setup will soon be available to streamline running the application. Sta
 - **Admin Users List**:
 
   ![Admin Users List](screenshots/admin_users_list.png)
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
