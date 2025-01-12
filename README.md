@@ -71,6 +71,10 @@ To build the project for production:
 
   ![Sign up Page](screenshots/sign_up.png)
 
+- **Add Friend**:
+
+  ![Add Friend](screenshots/add_friend.png)
+
 - **Friends List**:
 
   ![Friends List](screenshots/friends_list.png)
