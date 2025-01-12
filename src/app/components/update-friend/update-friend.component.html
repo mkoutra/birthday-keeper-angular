@@ -39,7 +39,8 @@
                 </mat-form-field>
         
                 <div class="d-flex justify-content-between align-items-center my-2">
-                    <button mat-flat-button (click)="goBackToMain()" class="w-25 me-1 bg-warning">Go Back</button>
+                    <!-- <button mat-flat-button (click)="goBackToMain()" class="w-25 me-1 bg-warning">Go Back</button> -->
+                    <a mat-flat-button role="button" (click)="goBackToMain()" class="w-25 me-1 bg-warning">Go Back</a>
                     <button mat-flat-button (click)="onSubmit()" [disabled]="form.invalid" class="w-75 ms-1">Update Friend</button>
                 </div>
             </form>

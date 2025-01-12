@@ -23,7 +23,8 @@ import { ErrorResponse } from '../../shared/interfaces/error-response';
             MatInputModule,
             MatTooltipModule,
             NgIf,
-            MatCheckboxModule],
+            MatCheckboxModule,
+            RouterLink],
   templateUrl: './user-register.component.html',
   styleUrl: './user-register.component.css'
 })
@@ -96,10 +97,5 @@ export class UserRegisterComponent {
     goBackToMain() {
         this.form.reset();
         this.router.navigate(['login'])
-    }
-
-    goBackToLogin() {
-        this.form.reset();
-        this.router.navigate(['login']);
     }
 }

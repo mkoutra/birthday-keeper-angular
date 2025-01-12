@@ -39,7 +39,8 @@
                 </mat-form-field>
                 
                 <div class="d-flex justify-content-between align-items-center my-2">
-                    <button mat-flat-button (click)="goBackToMain()" class="w-25 me-1 bg-warning">Go Back</button>
+                    <!-- <button mat-flat-button (click)="goBackToMain()" class="w-25 me-1 bg-warning">Go Back</button> -->
+                    <a mat-flat-button role="button" (click)="goBackToMain()" class="w-25 me-1 bg-warning">Go Back</a>
                     <button mat-flat-button (click)="onSubmit()" [disabled]="form.invalid" class="w-75 ms-1">Add Friend</button>
                 </div>
             </form>
@@ -50,7 +51,7 @@
             </div>
             
             <div *ngIf="successfulInsertion" class="alert alert-success text-center mt-3 w-50">
-                Your friend, <strong>{{insertedFullname}}</strong>, has been added successfully!
+                Your friend <strong>{{insertedFullname}}</strong> has been added successfully!
             </div>
 
     </div>
